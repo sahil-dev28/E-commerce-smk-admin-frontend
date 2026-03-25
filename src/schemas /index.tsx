@@ -228,9 +228,13 @@ export const createProductSchema = z
       .number({ error: "Inventory must be greater than or equal to 0" })
       .int("Must be a whole number")
       .optional(),
-    image: z.instanceof(File, {
-      message: "Product image is required",
-    }),
+    image: z
+      .instanceof(File, {
+        message: "Product image is required",
+      })
+      .refine((file) => file.size <= 1024 * 1024, {
+        message: "Image size must be less than 1MB",
+      }),
   })
   .refine(
     (data) =>
