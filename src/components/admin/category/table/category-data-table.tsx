@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CategoryFormDialog } from "../CategoryFormDialog";
-import { useCallback, useId, useMemo, useState } from "react";
+import { useId, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 
@@ -42,7 +42,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { usePagination } from "@/hooks/coupon/usePagination";
 import { Search } from "lucide-react";
-import { debounce } from "@tanstack/react-pacer";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -60,7 +59,6 @@ export function CategoryTable<TData, TValue>({
     pageSize: 5,
   });
   const [globalFilter, setGlobalFilter] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const table = useReactTable({
     data,
@@ -79,14 +77,14 @@ export function CategoryTable<TData, TValue>({
     },
   });
 
-  const debouncedSetSearch = useMemo(() => {
-    debounce(
-      (value) => {
-        setDebouncedSearch(value);
-      },
-      { wait: 1000 },
-    );
-  }, []);
+  // const debouncedSetSearch = useMemo(() => {
+  //   debounce(
+  //     (value) => {
+  //       setDebouncedSearch(value);
+  //     },
+  //     { wait: 1000 },
+  //   );
+  // }, []);
 
   const { pages, showLeftEllipsis, showRightEllipsis } = usePagination({
     currentPage: table.getState().pagination.pageIndex + 1,
