@@ -95,7 +95,7 @@ export function ProductFromDialog({
         color: products.color,
         description: products.description,
         inventory: products.inventory,
-        image: products.image,
+        image: products.image as File,
       });
     }
   }, [form, mode, products]);

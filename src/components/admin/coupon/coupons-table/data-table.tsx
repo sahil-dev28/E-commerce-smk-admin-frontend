@@ -35,8 +35,8 @@ interface DataTableProps<TData, TValue> {
   pagination: PaginationState;
   rowCount: number;
   setPagination: Dispatch<SetStateAction<PaginationState>>;
-  onSearchChange: (value: string) => void;
-  search: string;
+  onSearchChange?: (value: string) => void;
+  search?: string;
 }
 
 export function DataTable<TData, TValue>({

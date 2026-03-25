@@ -10,7 +10,7 @@ import { AvatarImage } from "@/components/ui/avatar";
 
 interface ProductImageProps {
   onChange: (file?: File) => void;
-  selectedFile: File;
+  selectedFile: File | string;
 }
 
 export function ProductImage({ onChange, selectedFile }: ProductImageProps) {

@@ -91,6 +91,6 @@ export interface Product {
   discountAmount?: number;
   featured?: boolean;
   inventory?: number;
-  image: File;
+  image: File | string;
   categoryId: string;
 }

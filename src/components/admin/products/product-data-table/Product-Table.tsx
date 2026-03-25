@@ -38,10 +38,10 @@ interface ProductTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   pagination: PaginationState;
-  rowCount: number;
+  rowCount?: number;
   setPagination: Dispatch<SetStateAction<PaginationState>>;
-  onSearchChange: (value: string) => void;
-  search: string;
+  onSearchChange?: (value: string) => void;
+  search?: string;
 }
 
 export function ProductTable<TData, TValue>({

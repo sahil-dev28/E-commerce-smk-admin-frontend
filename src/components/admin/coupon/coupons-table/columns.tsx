@@ -1,6 +1,6 @@
 "use client";
 
-import { createColumnHelper } from "@tanstack/react-table";
+import { type ColumnDef } from "@tanstack/react-table";
 import { parseISO } from "date-fns";
 
 import type { Coupon } from "@/types/auth.types";
@@ -9,17 +9,17 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { CouponActions } from "./CouponActions";
 
-const columnHelper = createColumnHelper<Coupon>();
-
-export const columns = [
-  columnHelper.accessor("code", {
+export const columns: ColumnDef <Coupon>[] = [
+  {
     header: "Code",
-  }),
+    accessorKey: "code",
+  },
 
-  columnHelper.accessor("startTime", {
+  {
     header: "Start",
+    accessorKey: "startTime",
     cell: ({ getValue }) => {
-      const value = getValue();
+      const value = getValue<string | null>();
       if (!value) return "-";
 
       const date = parseISO(value);
@@ -29,38 +29,40 @@ export const columns = [
         day: "numeric",
       }).format(date);
     },
-  }),
+  },
 
-  columnHelper.accessor("expiryTime", {
+  {
     header: "Expiration",
+    accessorKey: "expiryTime",
     cell: ({ getValue }) => {
-      const date = parseISO(getValue());
+      const value = getValue<string | null>();
+      if (!value) return "-";
+
+      const date = parseISO(value);
       return new Intl.DateTimeFormat("en-IN", {
         year: "numeric",
         month: "short",
         day: "numeric",
       }).format(date);
     },
-  }),
+  },
 
-  columnHelper.accessor("valid", {
+  {
     header: "Status",
-    cell: ({ row }) => {
-      const valid = row.getValue("valid") as boolean | undefined;
+    accessorKey: "valid",
+    cell: ({ getValue }) => {
+      const valid = getValue<boolean | undefined>();
 
       const styles = {
         valid:
-          "bg-green-600/10 text-green-600 focus-visible:ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:focus-visible:ring-green-400/40 [a&]:hover:bg-green-600/5 dark:[a&]:hover:bg-green-400/5",
-        invalid:
-          "bg-destructive/10 [a&]:hover:bg-destructive/5 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive",
+          "bg-green-600/10 text-green-600 dark:bg-green-400/10 dark:text-green-400",
+        invalid: "bg-destructive/10 text-destructive",
         unspecified:
-          "bg-amber-600/10 text-amber-600 focus-visible:ring-amber-600/20 dark:bg-amber-400/10 dark:text-amber-400 dark:focus-visible:ring-amber-400/40 [a&]:hover:bg-amber-600/5 dark:[a&]:hover:bg-amber-400/5",
+          "bg-amber-600/10 text-amber-600 dark:bg-amber-400/10 dark:text-amber-400",
       }[valid === true ? "valid" : valid === false ? "invalid" : "unspecified"];
 
       return (
-        <Badge
-          className={(cn("border-none focus-visible:outline-none"), styles)}
-        >
+        <Badge className={cn("border-none", styles)}>
           {valid === true
             ? "Valid"
             : valid === false
@@ -69,18 +71,21 @@ export const columns = [
         </Badge>
       );
     },
-  }),
+  },
 
-  columnHelper.accessor("maxRedemptions", {
+  {
     header: "Redemptions",
-    cell: ({ row }) =>
-      `${row.original.totalRedemptions} / ${row.original.maxRedemptions}`,
-  }),
+    accessorKey: "maxRedemptions",
+    cell: ({ row }) => {
+      return `${row.original.totalRedemptions} / ${row.original.maxRedemptions}`;
+    },
+  },
 
-  columnHelper.accessor("amount", {
+  {
     header: "Amount",
+    accessorKey: "amount",
     cell: ({ row, getValue }) => {
-      const amount = getValue();
+      const amount = getValue<number>();
       const type = row.original.type;
 
       if (type === "FIXED") {
@@ -96,18 +101,13 @@ export const columns = [
 
       return amount;
     },
-  }),
+  },
 
   {
+    id: "actions", // ✅ IMPORTANT: use id, not accessorKey
     header: "Actions",
-    accessorKey: "actions",
-    cell: ({ row }: { row: { original: Coupon } }) => {
-      const coupons = row.original;
-      return (
-        <>
-          <CouponActions coupons={coupons} />
-        </>
-      );
+    cell: ({ row }) => {
+      return <CouponActions coupons={row.original} />;
     },
   },
 ];
